@@ -11,6 +11,18 @@ SSH_BLOCK='\n# BEGIN PRESTIGE TECH SSH\nHost *\n    ServerAliveInterval 60\n    
 ALLOWED={'.bashrc','.gitconfig','.ssh/config'}
 FOLDERS=['projects','tools','scripts','logs','backup']
 
+
+def atomic_text(path,text):
+    path=Path(path);temporary=path.with_name(path.name+'.'+uuid.uuid4().hex+'.tmp')
+    mode=(path.stat().st_mode & 0o777) if path.exists() else 0o600
+    descriptor=os.open(temporary,os.O_CREAT|os.O_EXCL|os.O_WRONLY,mode)
+    try:
+        with os.fdopen(descriptor,'w',encoding='utf-8',newline='') as stream:
+            stream.write(text);stream.flush();os.fsync(stream.fileno())
+        os.chmod(temporary,mode);os.replace(temporary,path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
 def quote_git(value):
     if not value or len(value)>256 or any(c in value for c in '\r\n\0'):raise ValueError('Nieprawidłowa tożsamość Git.')
     return '"'+value.replace('\\','\\\\').replace('"','\\"')+'"'
@@ -39,7 +51,7 @@ def configure(home,git_name=None,git_email=None,ssh_client=False):
     os.chmod(backup/'manifest.json',0o600)
     for relative,(new,old) in planned.items():
         p=inside(home,relative);p.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
-        with p.open('w',encoding='utf-8',newline='') as stream:stream.write(new)
+        atomic_text(p,new)
         if old is None and relative=='.ssh/config':os.chmod(p,0o600)
     for folder in FOLDERS:inside(home,folder).mkdir(exist_ok=True)
     manifest['complete']=True;atomic_json(backup/'manifest.json',manifest);os.chmod(backup/'manifest.json',0o600)
@@ -62,5 +74,5 @@ def restore(home,backup):
     for p,original in restore_rows:
         if original is None:p.unlink()
         else:
-            with p.open('w',encoding='utf-8',newline='') as stream:stream.write(original)
+            atomic_text(p,original)
     return {'restored':True,'files':len(restore_rows),'packages':'Pakiety pozostają zainstalowane.'}

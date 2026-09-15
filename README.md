@@ -1,5 +1,5 @@
 # Prestige Termux Setup
-PRESTIGE TECH — by Dominik Wasilak — v0.3.1
+PRESTIGE TECH — by Dominik Wasilak — v0.3.4
 
 Powtarzalna konfiguracja Termuxa z profilami, dry run i kopiami konfiguracji.
 
@@ -39,3 +39,9 @@ biblioteki Python są dołączone. Zewnętrzne backendy systemowe pozostają wym
 Budowa: [docs/BUILD.md](docs/BUILD.md). Obsługa: [docs/GUI.md](docs/GUI.md).
 Ograniczenia bufora i testów: [docs/DESKTOP-STATUS.md](docs/DESKTOP-STATUS.md).
 Własny kod ma licencję MIT. Licencje zależności: THIRD_PARTY_NOTICES.txt.
+
+## Poprawki rollbacku 0.3.4
+
+Atomowe zapisy konfiguracji i odtwarzania, także przy przerwaniu konfiguracji wielu plików.
+
+Szczegóły: [docs/RECOVERY.md](docs/RECOVERY.md).

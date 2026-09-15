@@ -15,3 +15,8 @@ Opcjonalna tożsamość Git i ustawienia klienta SSH z backupem i rollbackiem.
 - GUI, PDF i samodzielny build EXE.
 - Ograniczony bufor wyników, poprawiona obsługa UTF-8 i zatrzymywania backendu.
 - Konfiguracja testów CI; zależności zachowują oryginalne licencje.
+
+## 0.3.4
+
+- Atomowe zapisy konfiguracji i odtwarzania, także przy przerwaniu konfiguracji wielu plików.
+- Testy błędów i zachowania danych.
