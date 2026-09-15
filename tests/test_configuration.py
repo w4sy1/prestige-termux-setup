@@ -22,7 +22,8 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_failed_atomic_write_preserves_original(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root=Path(temporary);config=root/'.bashrc';config.write_text('original')
+            # Match configure's canonical root even when TEMP uses an 8.3 alias.
+            root=Path(temporary).resolve();config=root/'.bashrc';config.write_text('original')
             replace=os.replace
             def fail(source,target):
                 if Path(target)==config:raise OSError('fixture failure')
@@ -35,7 +36,7 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_partial_multi_file_configuration_can_be_rolled_back(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root=Path(temporary);(root/'.bashrc').write_text('old shell');(root/'.gitconfig').write_text('old git')
+            root=Path(temporary).resolve();(root/'.bashrc').write_text('old shell');(root/'.gitconfig').write_text('old git')
             replace=os.replace
             def fail(source,target):
                 if Path(target)==root/'.gitconfig':raise OSError('fixture failure')
